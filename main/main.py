@@ -1,20 +1,15 @@
 import os
 from config.employer_ids import load_employer_ids
 from sql_requests.sql_tables import create_tables, fill_vacancies, fill_employers
-from src.db_manager import DBManager
 from src.hh_api import HHApi
+from config.db_connect import get_db_manager
 
 TOKEN = "USERLVV0TNLUJNURIM02P88L5EPBJ00TBF9AJDQCP8VDEJ7K2DOSPKNA0DLT4HE0"
 
 if __name__ == "__main__":
-    db_manager = DBManager(
-        host='localhost',
-        database='kyrsowaya5',
-        user='postgres',
-        password='852467913'
-    )
+    db_manager = get_db_manager()
 
-    conn = db_manager.connect()
+    conn = db_manager.connect()  # Коннект к БД.
     hh_api = HHApi(TOKEN)
 
     file_path = os.path.join('..', 'config', 'employers_id.txt')
@@ -27,19 +22,21 @@ if __name__ == "__main__":
     vacancy_data = []
 
     for info in employer_info:
+        """ Проходимся по нашим данным и сортируем их в наши пустые списки. """
         employer_data.append((info['employer_name'], info['employer_url'], info['employer_id']))
         vacancy_data.append((info['vacancy_name'], info['vacancy_id'], info['employer_id'], info['salary_from'],
                              info['salary_to'], info['vacancy_url']))
 
-    unique_employer_data = set(employer_data)
+    unique_employer_data = set(employer_data)  # Убираем все дубликаты с нашего списка.
 
-    create_tables(conn)
-    fill_employers(conn, unique_employer_data)
-    fill_vacancies(conn, vacancy_data)
+    create_tables(conn)  # Создаем наши таблицы.
+    fill_employers(conn, unique_employer_data)  # Заполняем таблицу employers данными.
+    fill_vacancies(conn, vacancy_data)  # Заполняем таблицу vacancies данными.
 
     print("Таблицы созданы и заполнены данными")
 
     while True:
+        """ Цикл для нашего пользовательского интерфейса. """
         print("\nВыберите действие:")
         print("1. Список всех компаний и количество вакансий у каждой компании.")
         print("2. Список всех вакансий с указанием названия компании, названия вакансии и зарплаты и ссылки на "
@@ -79,3 +76,5 @@ if __name__ == "__main__":
             break
         else:
             print("Некорректный ввод. Попробуйте снова.")
+
+    db_manager.disconnect()

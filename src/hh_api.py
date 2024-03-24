@@ -7,6 +7,7 @@ class HHApi:
 
     @staticmethod
     def get_employer_vacancies(id_data):
+        """ Получаем список всех вакансий по ID работодателей и возвращаем их как список словарей. """
         all_vacancies = []
         for i in id_data:
             url = f"https://api.hh.ru/vacancies?employer_id={i}"
@@ -19,6 +20,7 @@ class HHApi:
 
     @staticmethod
     def get_employer_info(vacancy_data):
+        """ Метод, который забирает из исходника только нужные нам данные и возвращает список. """
         data_list = []
         for vacancy in vacancy_data:
             employer_id = vacancy.get("employer", {}).get("id")

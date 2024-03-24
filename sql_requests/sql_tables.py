@@ -2,6 +2,7 @@ import psycopg2
 
 
 def create_tables(conn):
+    """ Функция создания таблиц employers и vacancies. """
     try:
         with conn:
             with conn.cursor() as cur:
@@ -23,6 +24,7 @@ def create_tables(conn):
 
 
 def fill_employers(conn, emp_data):
+    """ Функция заполнения таблицы employers. """
     try:
         with conn:
             with conn.cursor() as cur:
@@ -32,6 +34,7 @@ def fill_employers(conn, emp_data):
 
 
 def fill_vacancies(conn, vac_data):
+    """ Функция заполнения таблицы vacancies. """
     try:
         with conn:
             with conn.cursor() as cur:
